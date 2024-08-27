@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+
+
+struct Node
+{
+    int data;
+    struct Node* next;
+};
+
+struct CircularQueue
+{
+    struct Node* front;
+    struct Node* rear;
+};
+
+
+
+void initialize(struct CircularQueue *q)
+{
+
+    q->front=NULL;
+    q->rear=NULL;
+}
+
+
+
+int isEmpty(struct CircularQueue *q)
+{
+    return q->front==NULL;
+}
+
+void enqueue(struct CircularQueue *q,int value)
+{
+
+    struct Node* temp =(struct Node*)malloc(sizeof(struct Node));
+    temp->data=value;
+    if(isEmpty(q))
+    {
+        q->front=q->rear=temp;
+        q->rear->next=q->front;
+
+    }
+    else{
+        q->rear->next=temp;
+        q->rear=temp;
+        q->rear->next=q->front;
+
+    }
+    printf("Inserted %d\n",value);
+
+
+
+
+}
+
+int  dequeue(struct CircularQueue *q)
+{
+    if(isEmpty(q))
+    {
+        printf("Queue is empty\n");
+        return -1;
+    }
+
+    int data;
+
+    if(q->front ==q->rear)
+    {
+        data=q->front->data;
+        free(q->front);
+        q->front=q->rear=NULL;
+    }
+    else{
+        struct Node* temp=q->front;
+        data=temp->data;
+        q->front=q->front->next;
+        q->rear->next=q->front;
+        free(temp);
+    }
+
+    printf("Deleted %d\n",data);
+    return data;
+}
+
+
+
+void displayQueue(struct CircularQueue* q) {
+    if (isEmpty(q)) {
+        printf("Queue is Empty\n");
+        return;
+    }
+
+    struct Node* temp = q->front;
+    printf("Queue elements are: ");
+    while (temp->next != q->front) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("%d\n", temp->data);
+}
+
+
+
+int main() {
+    struct CircularQueue q;
+    initialize(&q);
+
+    enqueue(&q, 15);
+    enqueue(&q, 29);
+    enqueue(&q, 33);
+    enqueue(&q, 41);
+    enqueue(&q, 52);
+
+    displayQueue(&q);
+
+    dequeue(&q);
+    displayQueue(&q);
+
+    enqueue(&q, 60);
+    displayQueue(&q);
+
+    return 0;
+}
